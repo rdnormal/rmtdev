@@ -5,7 +5,9 @@ import Spinner from "./Spinner";
 
 export default function JobItemContent() {
   const activeId = useActiveId();
-  const [jobItem, isLoading] = useJobItem(activeId);
+  const { jobItem, isLoading } = useJobItem(activeId);
+
+  if (isLoading) return <LoadingJobContent />
 
   if (!jobItem) return <EmptyJobContent />
 
@@ -97,7 +99,17 @@ export default function JobItemContent() {
 
   return (
     <section className="job-details">
-      {isLoading ? <div><Spinner /></div> : renderJobDetails()}
+      {renderJobDetails()}
+    </section>
+  );
+}
+
+function LoadingJobContent() {
+  return (
+    <section className="job-details">
+      <div>
+        <Spinner />
+      </div>
     </section>
   );
 }
