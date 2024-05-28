@@ -1,5 +1,4 @@
-import ResultsCount from "./ResultsCount";
-import SortingControls from "./SortingControls";
+import React from "react";
 
 export default function Sidebar({ children }: {children: React.ReactNode}) {
   return (
@@ -9,11 +8,10 @@ export default function Sidebar({ children }: {children: React.ReactNode}) {
   );
 }
 
-export function SidebarTop() {
+export function SidebarTop({children}: {children: React.ReactNode}) {
   return (
     <div className="sidebar__top">
-      <ResultsCount />
-      <SortingControls />
+{children}
     </div>
   )
 }

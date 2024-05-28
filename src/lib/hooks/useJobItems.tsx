@@ -6,6 +6,7 @@ export default function useJobItems(searchText: string) {
   const [isLoading, setIsLoading] = useState(false)
 
   const jobItemSliced = jobItems.slice(0, 7);
+  const totalNumOfResults = jobItems.length;
 
   const fetchData = async () => {
     setIsLoading(true)
@@ -20,6 +21,6 @@ export default function useJobItems(searchText: string) {
     fetchData();
   }, [searchText])
 
-  return [jobItemSliced,
-    isLoading] as const
+  return {jobItemSliced,
+    isLoading, totalNumOfResults} as const
 }
