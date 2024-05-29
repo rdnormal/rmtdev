@@ -14,23 +14,38 @@ import SortingControls from "./SortingControls";
 import useDebounce from "../lib/hooks/useDebounce";
 import { Toaster } from "react-hot-toast";
 import { RESULTS_PER_PAGE } from "../lib/consts";
+import { PageDirection, SortBy } from "../lib/types";
 
 function App() {
   const [searchText, setSearchText] = useState("")
   const debouncedSearch = useDebounce(searchText, 500)
   const { jobItems, isLoading } = useJobItems(debouncedSearch)
   const [currentPage, setCurrentPage] = useState(1)
+  const [sortBy, setSortBy] = useState<SortBy>("relevant")
 
-  const jobItemSliced = jobItems?.slice(currentPage * RESULTS_PER_PAGE - RESULTS_PER_PAGE, currentPage * RESULTS_PER_PAGE) || [];
+  const jobItemSorted = [...(jobItems || [])].sort((a, b) => {
+    if (sortBy === "relevant") {
+      return b.relevanceScore - a.relevanceScore;
+    } else {
+      return a.daysAgo - b.daysAgo
+    }
+  });
+
+  const jobItemsSortedAndSliced = jobItemSorted?.slice(currentPage * RESULTS_PER_PAGE - RESULTS_PER_PAGE, currentPage * RESULTS_PER_PAGE);
   const totalNumOfResults = jobItems?.length || 0;
   const totalNumOfPages = totalNumOfResults / RESULTS_PER_PAGE;
 
-  const handleChangePage = (direction: "next" | "previous") => {
+  const handleChangePage = (direction: PageDirection) => {
     if (direction === "next") {
       setCurrentPage(prev => prev + 1)
     } else if (direction === "previous") {
       setCurrentPage(prev => prev - 1)
     }
+  }
+
+  const handleChangeSortBy = (newSortBy: SortBy) => {
+    setCurrentPage(1)
+    setSortBy(newSortBy)
   }
 
   return <>
@@ -45,10 +60,10 @@ function App() {
       <Sidebar>
         <SidebarTop>
           <ResultsCount totalNumOfResults={totalNumOfResults} />
-          <SortingControls />
+          <SortingControls onClick={handleChangeSortBy} sortBy={sortBy}/>
         </SidebarTop>
 
-        <JobList jobItems={jobItemSliced} isLoading={isLoading} />
+        <JobList jobItems={jobItemsSortedAndSliced} isLoading={isLoading} />
 
         <PaginationControls onClick={handleChangePage} currentPage={currentPage} totalNumOfPages={totalNumOfPages}/>
       </Sidebar>
