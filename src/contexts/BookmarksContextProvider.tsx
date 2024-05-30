@@ -1,14 +1,21 @@
-import { createContext, useEffect, useState } from "react"
+import { createContext } from "react"
+import useLocalStorage from "../lib/hooks/useLocalStorage"
+import useJobItems from "../lib/hooks/useJobItems"
+import { TJobItemExpanded } from "../lib/types"
 
 type TContextValue = {
   bookmarkedIds: number[],
-  handleToggleBookmark: (id: number) => void
+  handleToggleBookmark: (id: number) => void,
+  bookmarkedJobItems: TJobItemExpanded[],
+  isLoading: boolean
 }
 
 export const BookmarksContext = createContext<null | TContextValue>(null)
 
-export default function BookmarksContextProvider({children} : {children: React.ReactNode}) {
-  const [bookmarkedIds, setBookmarkedIds] = useState<number[]>(() => JSON.parse(localStorage.getItem("bookmarkedIds") || "[]"))
+export default function BookmarksContextProvider({ children }: { children: React.ReactNode }) {
+  const [bookmarkedIds, setBookmarkedIds] = useLocalStorage<number[]>("bookmarkIds", [])
+
+  const { jobItems: bookmarkedJobItems, isLoading } = useJobItems(bookmarkedIds)
 
   const handleToggleBookmark = (id: number) => {
     if (bookmarkedIds.includes(id)) {
@@ -18,13 +25,11 @@ export default function BookmarksContextProvider({children} : {children: React.R
     }
   }
 
-  useEffect(() => {
-    localStorage.setItem("bookmarkedIds", JSON.stringify(bookmarkedIds))
-  }, [bookmarkedIds])
-
   const contextValue = {
     bookmarkedIds,
-    handleToggleBookmark
+    handleToggleBookmark,
+    bookmarkedJobItems,
+    isLoading
   }
 
   return (

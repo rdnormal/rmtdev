@@ -8,7 +8,7 @@ type JobItemApiResponse = {
   jobItem: TJobItemExpanded
 };
 
-const fetchJobItem = async (id: number): Promise<JobItemApiResponse> => {
+export const fetchJobItem = async (id: number): Promise<JobItemApiResponse> => {
   const res = await fetch(`${BASE_API_URL}/${id}`)
   if (!res.ok) {
     const errorData = await res.json();

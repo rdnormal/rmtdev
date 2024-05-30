@@ -8,7 +8,7 @@ import JobItemContent from "./JobItemContent";
 import Sidebar, { SidebarTop } from "./Sidebar";
 import JobList from "./JobList";
 import PaginationControls from "./PaginationControls";
-import useJobItems from "../lib/hooks/useJobItems";
+import useSearchQuery from "../lib/hooks/useSearchQuery";
 import ResultsCount from "./ResultsCount";
 import SortingControls from "./SortingControls";
 import useDebounce from "../lib/hooks/useDebounce";
@@ -19,7 +19,7 @@ import { PageDirection, SortBy } from "../lib/types";
 function App() {
   const [searchText, setSearchText] = useState("")
   const debouncedSearch = useDebounce(searchText, 500)
-  const { jobItems, isLoading } = useJobItems(debouncedSearch)
+  const { jobItems, isLoading } = useSearchQuery(debouncedSearch)
   const [currentPage, setCurrentPage] = useState(1)
   const [sortBy, setSortBy] = useState<SortBy>("relevant")
 
@@ -60,12 +60,12 @@ function App() {
       <Sidebar>
         <SidebarTop>
           <ResultsCount totalNumOfResults={totalNumOfResults} />
-          <SortingControls onClick={handleChangeSortBy} sortBy={sortBy}/>
+          <SortingControls onClick={handleChangeSortBy} sortBy={sortBy} />
         </SidebarTop>
 
         <JobList jobItems={jobItemsSortedAndSliced} isLoading={isLoading} />
 
-        <PaginationControls onClick={handleChangePage} currentPage={currentPage} totalNumOfPages={totalNumOfPages}/>
+        <PaginationControls onClick={handleChangePage} currentPage={currentPage} totalNumOfPages={totalNumOfPages} />
       </Sidebar>
 
       <JobItemContent />

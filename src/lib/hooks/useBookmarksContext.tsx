@@ -5,16 +5,8 @@ export default function useBookmarksContext() {
   const context = useContext(BookmarksContext)
 
   if (!context) {
-    throw new Error("context not wrapped")
+    throw new Error("useBookmarksContext must be used within a BookmarksContextProvider")
   }
 
-  const {
-    bookmarkedIds,
-    handleToggleBookmark
-  } = context
-
-  return {
-    bookmarkedIds,
-    handleToggleBookmark
-  }
+  return context
 }
